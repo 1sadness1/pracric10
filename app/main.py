@@ -6,10 +6,10 @@ from app.database import engine, Base
 from app.routers import auth_router, topics_router, posts_router
 from app.config import settings
 
-# Создание таблиц в БД (если их нет)
+
 Base.metadata.create_all(bind=engine)
 
-# Создание приложения
+
 app = FastAPI(
     title="Forum API",
     description="Online forum backend with JWT authentication",
@@ -18,12 +18,12 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# Подключение роутеров
+
 app.include_router(auth_router)
 app.include_router(topics_router)
 app.include_router(posts_router)
 
-# Обработчики ошибок
+
 @app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request: Request, exc: StarletteHTTPException):
     return JSONResponse(
