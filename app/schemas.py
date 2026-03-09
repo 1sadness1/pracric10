@@ -3,18 +3,18 @@ from datetime import datetime
 from typing import Optional, List
 import sys
 
-# User schemas
+
 class UserBase(BaseModel):
     email: EmailStr
     username: str = Field(..., min_length=3, max_length=50)
 
 class UserCreate(UserBase):
-    password: str = Field(..., min_length=6, max_length=72)  # Добавлено явное ограничение
+    password: str = Field(..., min_length=6, max_length=72)  
     
     @validator('password')
     def validate_password_length(cls, v):
         """Проверка длины пароля"""
-        # Проверяем длину в байтах
+        
         password_bytes = v.encode('utf-8')
         if len(password_bytes) > 72:
             error_msg = f"Password too long: {len(password_bytes)} bytes (max 72 bytes). Please use a shorter password."
@@ -29,7 +29,7 @@ class UserResponse(UserBase):
     class Config:
         from_attributes = True
 
-# Token schemas
+
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
@@ -37,7 +37,7 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     username: Optional[str] = None
 
-# Topic schemas
+
 class TopicBase(BaseModel):
     title: str = Field(..., min_length=1, max_length=200)
     content: str = Field(..., min_length=1)
@@ -67,7 +67,7 @@ class TopicDetailResponse(TopicBase):
     class Config:
         from_attributes = True
 
-# Post schemas
+
 class PostBase(BaseModel):
     content: str = Field(..., min_length=1)
 
@@ -84,5 +84,5 @@ class PostResponse(PostBase):
     class Config:
         from_attributes = True
 
-# Обновление forward references
+
 TopicDetailResponse.model_rebuild()
