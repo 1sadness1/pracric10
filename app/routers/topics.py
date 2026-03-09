@@ -14,8 +14,8 @@ def get_topics(
     limit: int = 100,
     db: Session = Depends(get_db)
 ):
-    """Получение списка всех тем"""
-    # Получаем темы с количеством сообщений
+    
+    
     topics = db.query(
         models.Topic,
         func.count(models.Post.id).label("message_count")
@@ -48,7 +48,7 @@ def create_topic(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_active_user)
 ):
-    """Создание новой темы"""
+    
     new_topic = models.Topic(
         title=topic_data.title,
         content=topic_data.content,
@@ -75,7 +75,7 @@ def get_topic(
     topic_id: int,
     db: Session = Depends(get_db)
 ):
-    """Получение темы со всеми сообщениями"""
+    
     topic = db.query(models.Topic).filter(models.Topic.id == topic_id).first()
     if not topic:
         raise HTTPException(
@@ -83,14 +83,14 @@ def get_topic(
             detail="Topic not found"
         )
     
-    # Получаем все сообщения темы
+    
     posts = db.query(models.Post).filter(
         models.Post.topic_id == topic_id
     ).order_by(
         models.Post.created_at.asc()
     ).all()
     
-    # Формируем список сообщений
+    
     posts_data = []
     for post in posts:
         posts_data.append(schemas.PostResponse(
