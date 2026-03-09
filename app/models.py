@@ -12,7 +12,7 @@ class User(Base):
     password_hash = Column(String, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
-    # Связи
+    
     topics = relationship("Topic", back_populates="author", cascade="all, delete-orphan")
     posts = relationship("Post", back_populates="author", cascade="all, delete-orphan")
 
@@ -26,7 +26,7 @@ class Topic(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
-    # Связи
+    
     author = relationship("User", back_populates="topics")
     posts = relationship("Post", back_populates="topic", cascade="all, delete-orphan")
 
@@ -39,6 +39,6 @@ class Post(Base):
     author_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
-    # Связи
+    
     topic = relationship("Topic", back_populates="posts")
     author = relationship("User", back_populates="posts")
