@@ -13,8 +13,7 @@ def create_post(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_active_user)
 ):
-    """Создание сообщения в теме"""
-    # Проверяем существование темы
+    
     topic = db.query(models.Topic).filter(models.Topic.id == topic_id).first()
     if not topic:
         raise HTTPException(
@@ -22,7 +21,7 @@ def create_post(
             detail="Topic not found"
         )
     
-    # Создаем сообщение
+   
     new_post = models.Post(
         content=post_data.content,
         topic_id=topic_id,
