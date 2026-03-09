@@ -10,9 +10,9 @@ router = APIRouter(prefix="/auth", tags=["authentication"])
 
 @router.post("/register", status_code=status.HTTP_201_CREATED, response_model=schemas.UserResponse)
 def register(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
-    """Регистрация нового пользователя"""
+    
     try:
-        # Проверка email
+        
         existing_email = db.query(models.User).filter(models.User.email == user_data.email).first()
         if existing_email:
             raise HTTPException(
@@ -20,7 +20,7 @@ def register(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
                 detail="Email already registered"
             )
         
-        # Проверка username
+        
         existing_username = db.query(models.User).filter(models.User.username == user_data.username).first()
         if existing_username:
             raise HTTPException(
@@ -28,7 +28,7 @@ def register(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
                 detail="Username already taken"
             )
         
-        # Проверка длины пароля в байтах
+        
         password_bytes = user_data.password.encode('utf-8')
         if len(password_bytes) > 72:
             raise HTTPException(
@@ -36,7 +36,7 @@ def register(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
                 detail=f"Password too long: {len(password_bytes)} bytes. Maximum is 72 bytes. Please use a shorter password."
             )
         
-        # Создание пользователя
+        
         hashed_password = get_password_hash(user_data.password)
         new_user = models.User(
             email=user_data.email,
@@ -67,7 +67,7 @@ def login(
 ):
     """Вход в систему"""
     try:
-        # Поиск пользователя
+        
         user = db.query(models.User).filter(models.User.username == form_data.username).first()
         
         if not user:
@@ -77,7 +77,7 @@ def login(
                 headers={"WWW-Authenticate": "Bearer"},
             )
         
-        # Проверяем пароль
+       
         if not verify_password(form_data.password, user.password_hash):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -85,7 +85,7 @@ def login(
                 headers={"WWW-Authenticate": "Bearer"},
             )
         
-        # Создание токена
+       
         access_token = create_access_token(data={"sub": user.username})
         
         return {"access_token": access_token, "token_type": "bearer"}
